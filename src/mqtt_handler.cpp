@@ -174,7 +174,9 @@ void sendMQTTFullStatus() {
     json += now_pumping ? "true" : "false";
     json += ",\"uptime\":";
     json += String(millis() / 1000);
-    json += ", \"fw_version\": \"2.1.0\"";
+    json += ", \"fw_version\": \"";
+    json += FIRMWARE_VERSION;
+    json += "\"";
     json += "}";
     String statusTop = String(MQTT_TOPIC_PREFIX) + "/status";
     clientObj.publish(statusTop.c_str(), json.c_str(), true);
