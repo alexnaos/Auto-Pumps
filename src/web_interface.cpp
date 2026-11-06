@@ -22,11 +22,15 @@ DB_KEYS(kk,
     lbl_sys_state,
     lbl_uptime,
     lbl_wifi,
+    lbl_fw_version,
     lbl_pump_name,
     lbl_pump_state,
     lbl_pump_period,
     lbl_pump_work
 );
+
+// Переменная аптайма - общая для билдера и апдейтера
+char uptimeStr[32];
 
 // Вспомогательная функция: получить ключ периода по индексу помпы
 static uint32_t getPeriodKey(int idx) {
@@ -90,15 +94,10 @@ void buildInterface(sets::Builder &b) {
     {
         sets::Group g(b, "Статус системы");
         b.Label(kk::lbl_sys_state, "Состояние", now_pumping ? "💧 Полив активен" : "✅ Ожидание");
-        
-        char uptimeStr[32];
-        uint32_t sec = millis() / 1000;
-        uint32_t h = sec / 3600;
-        uint32_t m = (sec % 3600) / 60;
-        uint32_t s = sec % 60;
-        snprintf(uptimeStr, sizeof(uptimeStr), "%02d:%02d:%02d", h, m, s);
         b.Label(kk::lbl_uptime, "Аптайм", uptimeStr);
         b.Label(kk::lbl_wifi, "WiFi", WiFi.status() == WL_CONNECTED ? "✅ Подключен" : "❌ Нет связи");
+        // Вывод версии прошивки и даты компиляции (по документации SettingsGyver)
+        b.Label(kk::lbl_fw_version, "FW", String(FIRMWARE_VERSION) + " / " + __DATE__ + " " + __TIME__);
     }
 
     // ---- ВЫБОР ПОМПЫ ----
@@ -224,16 +223,19 @@ void updateInterface(sets::Updater &upd) {
     int idx = db[kk::selected_pump].toInt();
     if (idx < 0 || idx >= PUPM_AMOUNT) idx = 0;
     
-    char uptimeStr[32];
     uint32_t sec = millis() / 1000;
     uint32_t h = sec / 3600;
     uint32_t m = (sec % 3600) / 60;
     uint32_t s = sec % 60;
     snprintf(uptimeStr, sizeof(uptimeStr), "%02d:%02d:%02d", h, m, s);
     
+    char fwVer[40];
+    snprintf(fwVer, sizeof(fwVer), "%s / %s %s", FIRMWARE_VERSION, __DATE__, __TIME__);
+    
     upd.update(kk::lbl_sys_state, now_pumping ? "💧 Полив активен" : "✅ Ожидание");
     upd.update(kk::lbl_uptime, uptimeStr);
     upd.update(kk::lbl_wifi, WiFi.status() == WL_CONNECTED ? "✅ Подключен" : "❌ Нет связи");
+    upd.update(kk::lbl_fw_version, fwVer);
     upd.update(kk::lbl_pump_state, pump_state[idx] == SWITCH_LEVEL ? "🟢 Включена" : "⚪ Выключена");
     upd.update(kk::lbl_pump_name, pumpNames[idx]);
     

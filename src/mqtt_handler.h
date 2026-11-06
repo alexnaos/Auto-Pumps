@@ -11,11 +11,24 @@ extern WiFiClient espClientObj;
 extern PubSubClient clientObj;
 extern boolean now_pumping;
 
-// Только прототипы функций
+// Home Assistant Discovery constants
+#define HA_DEVICE_MANUFACTURER "ESP32"
+#define HA_DEVICE_SW_VERSION "2.0"
+
+// Only prototypes of functions
 void mqttInit();
 void mqttTick();
 void mqttPublishStatus(int id, bool state);
-void mqttCallback(char *topic, byte *payload, unsigned int length);
-void reconnect();
+
+// NEW: Helper function for generating HA Discovery payloads
+static String haDiscoveryPayload(const String& extraFields) {
+    String payload = "{";
+    payload += extraFields;
+    payload += "}";
+    return payload;
+}
+
+// NEW: Expanded discovery function - adds 6 entity types per pump
+void sendMQTTDiscovery();
 
 #endif

@@ -41,5 +41,6 @@
 #define HA_DEVICE_NAME "AutoPumps"
 #define HA_DEVICE_ID "autopumps_esp32"
 #define MQTT_TOPIC_PREFIX "garden"
+#define FIRMWARE_VERSION "1.1"
 
 #endif
