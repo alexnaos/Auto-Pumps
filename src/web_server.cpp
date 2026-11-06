@@ -56,6 +56,10 @@ void initWebServer() {
 
     // Настройка темы — тёмная синяя, кнопки будут видны
     sett.config.theme = sets::Colors::Blue;
+   
+        // >>> ВОТ ЗДЕСЬ ПРОПИСЫВАЕМ ВЕРСИЮ И ИНФО О ПРОЕКТЕ <<<
+    sett.setVersion("v2.1.0 (" __DATE__ " " __TIME__ ")");
+    sett.setProjectInfo("Auto-Pumps Valve", "https://github.com/alexnaos/Auto-Pumps");
     
     sett.begin();
     sett.onBuild(buildInterface);
