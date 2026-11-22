@@ -61,7 +61,7 @@ void initWebServer() {
     sett.setVersion("v2.1.0 (" __DATE__ " " __TIME__ ")");
     sett.setProjectInfo("Auto-Pumps Valve", "https://github.com/alexnaos/Auto-Pumps");
     
-    sett.begin();
+    sett.begin(true, "Auto-Pumps");
     sett.onBuild(buildInterface);
     sett.onUpdate(updateInterface);
     
